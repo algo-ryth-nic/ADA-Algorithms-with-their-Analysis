@@ -3,10 +3,15 @@ import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 
+# TODO: compare with kruskal algo...
+# also compare with sparse and dense algos for both algos
+# error when given a sparse graph, i.e. when a disjoint node is encountered
+
 class Graph():
 
     def __init__(self, vertices):
         self.V = vertices
+        print(self.V)
         self.graph = [[0 for column in range(vertices)]
                     for row in range(vertices)]
 
@@ -37,7 +42,7 @@ class Graph():
 
 
     # Function to construct and print MST for a graph represented using adjacency matrix representation
-    def primMST(self):
+    def primMST(self, print_output= True):
         # Key values used to pick minimum weight edge in cut
         key = [99999999] * self.V
         parent = [None] * self.V # Array to store constructed MST
@@ -71,7 +76,9 @@ class Graph():
                         key[v] = self.graph[u][v]
                         parent[v] = u
 
-        self.printMST(parent)
+        if print_output:
+            self.printMST(parent)
+
         return self.getMST(parent)
 
 
@@ -84,11 +91,12 @@ def generate_random_graph(n, random_weights = True):
     this matrix is then converted to python's 2d list type
     this is then returned
     """
-    Graph = nx.fast_gnp_random_graph(n, 0.5)
+    Graph = nx.fast_gnp_random_graph(n, 1)
 
     if(random_weights):
         for (u, v) in Graph.edges():
-            Graph.edges[u,v]['weight'] = np.random.randint(0,999, dtype=int)
+            Graph.edges[u,v]['weight'] = np.random.randint(1,999, dtype=int)
+
     # in numpy
     graph = nx.to_numpy_matrix(Graph)
     # to list
@@ -104,7 +112,37 @@ def draw_graph(graph):
     plt.show()
 
 
+# using adjency matrix, O(V^2)
+def plot_complexity(stop):
+  title = f"Prims Algorithm O(V^2)"
+  data = {
+      'length of list':[],
+      'time taken': []
+  }
 
+  # main loop
+  for i in range(2, stop+1):
+    # setting the no. of nodes for graph
+    G = Graph(i)
+
+    # generating the random graph with a edge creation probability of 1 (dense graph)
+    G.graph = generate_random_graph(i)
+
+    start = timer()
+    edge_list = G.primMST(print_output= False)
+    end = timer()
+
+    print(f"MST edges-list: {edge_list}")
+    print(f'Find the MST using Prims Algorithm for graph of {i} nodes solved in {end-start} s')
+
+    data['length of list'].append(i)
+    data['time taken'].append(end-start)
+
+  plt.plot(data['length of list'], data['time taken'], label=title)
+  plt.title(title)
+  plt.xlabel('Size of graph')
+  plt.ylabel('Time taken')
+  plt.show()
 
 
 def main():
@@ -138,4 +176,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    plot_complexity(stop = 100)
+
