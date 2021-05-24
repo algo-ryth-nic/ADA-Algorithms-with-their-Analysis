@@ -11,7 +11,6 @@ class Graph():
 
     def __init__(self, vertices):
         self.V = vertices
-        print(self.V)
         self.graph = [[0 for column in range(vertices)]
                     for row in range(vertices)]
 
@@ -106,8 +105,19 @@ def generate_random_graph(n, random_weights = True):
 
 
 def draw_graph(graph):
+    # positions of each node
+    pos= nx.random_layout(graph)
+    # pos= nx.kamada_kawai_layout(graph)
+
+    # weights
+    weights = nx.get_edge_attributes(graph,'weight')
+
+    print(pos)
+
     # drawing onto canvas
-    nx.draw(graph, with_labels = True, edge_color = 'black' ,width = 1, alpha = 0.95)
+    nx.draw(graph, pos = pos, with_labels = True, edge_color = 'black', width = 1, alpha = 0.95)
+    # drawing the weights
+    nx.draw_networkx_edge_labels(graph, pos = pos, edge_labels= weights)
     # showing diagram
     plt.show()
 
@@ -145,20 +155,42 @@ def plot_complexity(stop):
   plt.show()
 
 
-def main():
+def menu():
+    print("[1] Prim's Algorithm")
+    print("[2] Run Prim's Algorithm for randomly generated dense graphs")
+    print("[3] Plot the time complexity")
+    inpt = int(input("\n[INPUT] Enter your option: "))
 
-    V = 5
-    G = Graph(V)
+    if inpt == 1:
+        main()
+    elif inpt == 2:
+        main(random_graph= True)
+    elif inpt == 3:
+        plot_complexity(stop = int(input("[INPUT] Max graph size (V): ")))
+    else:
+        print("[Error] Invalid options")
 
-    # default example
-    G.graph = [ [0, 2, 0, 6, 0],
-                [2, 0, 3, 8, 5],
-                [0, 3, 0, 0, 7],
-                [6, 8, 0, 0, 9],
-                [0, 5, 7, 9, 0]]
 
-    # G.graph = generate_random_graph(V)
-    print("Printing Original graph\n")
+
+# Default Example
+def main(random_graph= False):
+
+    if random_graph:
+        V = int(input("[INPUT] V: "))
+        G = Graph(V)
+        G.graph = generate_random_graph(V)
+    else:
+        V = 5
+        G = Graph(V)
+        # default example
+        G.graph = [ [0, 2, 0, 6, 0],
+                    [2, 0, 3, 8, 5],
+                    [0, 3, 0, 0, 7],
+                    [6, 8, 0, 0, 9],
+                    [0, 5, 7, 9, 0]]
+
+
+    print("Printing Original graph...")
     g = nx.Graph()
     g = nx.from_numpy_matrix(np.array(G.graph))
     draw_graph(g)
@@ -168,7 +200,7 @@ def main():
     print(edge_list)
 
     # Drawing MST
-    print("Printing MST graph\n")
+    print("\nPrinting MST graph")
     g = nx.Graph()
     g.add_edges_from(edge_list)
     draw_graph(g)
@@ -176,6 +208,10 @@ def main():
 
 
 if __name__ == "__main__":
+    # To use menu interface instead
+    menu()
+
     # main()
-    plot_complexity(stop = 100)
+
+    # plot_complexity(stop = 100)
 
