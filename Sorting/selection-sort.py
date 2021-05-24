@@ -1,6 +1,8 @@
+from timeit import default_timer as timer
+
 def selection_sort(arr):
     swaps = 0
-    for l in range(0, len(arr)-1):    #
+    for l in range(0, len(arr)-1):
         key_index = l
 
         # searching for min/max element
