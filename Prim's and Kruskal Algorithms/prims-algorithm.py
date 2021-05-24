@@ -112,8 +112,6 @@ def draw_graph(graph):
     # weights
     weights = nx.get_edge_attributes(graph,'weight')
 
-    print(pos)
-
     # drawing onto canvas
     nx.draw(graph, pos = pos, with_labels = True, edge_color = 'black', width = 1, alpha = 0.95)
     # drawing the weights
@@ -143,7 +141,7 @@ def plot_complexity(stop):
     end = timer()
 
     print(f"MST edges-list: {edge_list}")
-    print(f'Find the MST using Prims Algorithm for graph of {i} nodes solved in {end-start} s')
+    print(f'Found the MST using Prims Algorithm for graph of {i} nodes solved in {end-start} s')
 
     data['length of list'].append(i)
     data['time taken'].append(end-start)
@@ -168,7 +166,7 @@ def menu():
     elif inpt == 3:
         plot_complexity(stop = int(input("[INPUT] Max graph size (V): ")))
     else:
-        print("[Error] Invalid options")
+        print("[Error] Invalid option")
 
 
 
